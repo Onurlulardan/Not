@@ -3,6 +3,7 @@ import { useNoteContext } from '../hooks/useNoteContext';
 import moment from 'moment';
 import 'moment/locale/tr';
 import { useAuthContext } from '../hooks/useAuthContext';
+import swal from 'sweetalert';
 
 const Notdetail = ({not}) => {
   const { dispatch } =useNoteContext();
@@ -14,19 +15,38 @@ const Notdetail = ({not}) => {
     if(!user) {
       return
     }
-
-    const response = await fetch(`/api/notes/${not._id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${user.token}`
+    
+    swal({
+      title: 'Emin Misin?',
+      text: 'Not Silinecek!',
+      icon: 'warning',
+      dangerMode: true,
+      buttons: {
+        confirm: 'Evet Sil!',
+        cancel: 'Vazgeç!'
+      }
+    }).then(async (isDelete) => {
+      if(isDelete){
+        const response = await fetch(`/api/notes/${not._id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        });
+    
+        const json = await response.json();
+    
+        if(response.ok){
+          dispatch({ type: 'DELETE_NOTE', payload: json });
+          swal({
+            text: 'Silme İşlemi Başarılı!',
+            icon: 'success',
+            timer: 2000,
+            buttons: false
+          });
+        }
       }
     });
-
-    const json = await response.json();
-
-    if(response.ok){
-      dispatch({ type: 'DELETE_NOTE', payload: json });
-    }
   }
 
   return (

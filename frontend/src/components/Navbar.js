@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext';
+import swal from 'sweetalert';
 
 
 const Navbar = () => {
@@ -9,7 +10,20 @@ const Navbar = () => {
   const { user } = useAuthContext();
 
   const handleClick = () => {
-    logout();
+
+    swal({
+      title: 'Çıkış Yapılıcak Emin Misin?',
+      icon: 'warning',
+      buttons: {
+        confirm: 'Evet Çıkış Yap!',
+        cancel: 'Vazgeç!',
+      },
+      dangerMode: true
+    }).then((isLogout)=>{
+      if(isLogout){
+        logout();
+      }
+    });
   }
 
   return (

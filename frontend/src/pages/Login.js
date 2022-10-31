@@ -23,7 +23,7 @@ const Login = () => {
         <label htmlFor="password">Şifre : </label>
         <input id='password' type="password" onChange={(e) => { setPassword(e.target.value) }} />
 
-        <button disabled={loading} type='submit'>Kaydet</button>
+        <button disabled={loading} type='submit'>Giriş Yap</button>
         {errors && (<div className='error'> {errors} </div>)}
     </form>
   )

@@ -1,23 +1,32 @@
 import React, {useState, useEffect} from 'react';
 import { useNoteContext } from '../hooks/useNoteContext';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const NotForm = () => {
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
     const [err, setErr] = useState(null);
     const [emptyAreas, setEmptyAreas] = useState([]);
+    const { user } = useAuthContext();
 
     const { dispatch } = useNoteContext();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const note = {title, desc};
+        if(!user){
+            setErr('Not Eklemek İçin Giriş Yapmalısınız!')
+            return
+        }
 
+        const note = {title, desc};
 
         const response = await fetch('/api/notes', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            },
             body: JSON.stringify(note)
         });
 

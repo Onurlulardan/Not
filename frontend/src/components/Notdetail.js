@@ -1,17 +1,25 @@
 import React from 'react';
 import { useNoteContext } from '../hooks/useNoteContext';
 import moment from 'moment';
-import 'moment/locale/tr'
+import 'moment/locale/tr';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const Notdetail = ({not}) => {
-
   const { dispatch } =useNoteContext();
+  const { user } = useAuthContext();
 
   const handleClick = async (e) => {
     e.preventDefault();
 
+    if(!user) {
+      return
+    }
+
     const response = await fetch(`/api/notes/${not._id}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${user.token}`
+      }
     });
 
     const json = await response.json();

@@ -2,24 +2,32 @@ import React, {useEffect, useState} from 'react';
 import Notdetail from '../components/Notdetail';
 import NotForm from '../components/NotForm';
 import { useNoteContext } from '../hooks/useNoteContext';
+import { useAuthContext }  from '../hooks/useAuthContext';
 
 const Home = () => {
   const { notes, dispatch } = useNoteContext();
+  const { user } = useAuthContext();
 
   useEffect(() => {
 
     const fetchNots = async () => {
 
-      const response = await fetch('/api/notes');
+      const response = await fetch('/api/notes', {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      });
       const json = await response.json();
 
       if(response.ok){
         dispatch({ type: 'FILL_NOTE', payload: json });
       }
     }
+    if(user) {
+      fetchNots();
+    }
 
-    fetchNots();
-  }, []);
+  }, [dispatch, user]);
 
 
   return (

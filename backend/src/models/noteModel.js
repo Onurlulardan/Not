@@ -10,6 +10,10 @@ const noteSchema = new monSchema({
     },
     desc: {
         type: String,
+    },
+    user_id: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true
